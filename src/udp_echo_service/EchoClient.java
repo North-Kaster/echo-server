@@ -9,7 +9,7 @@ public class EchoClient {
 
     public static void main(String[] args) throws IOException {
 
-        if(args.length != 2){
+        if (args.length != 2) {
             System.out.println("Syntax: EchoClient <serverIP> <serverPort>");
             return;
         }
@@ -18,15 +18,21 @@ public class EchoClient {
         int serverPort = Integer.parseInt(args[1]);
 
         Scanner keyboard = new Scanner(System.in);
-        while(true) {
-        String message = keyboard.nextLine();
 
+        //create & send the request packet to server
+        //not specifying port number because the client makes the first move and the server extracts the port number
+        //from whatever the client sends
+        //We don't need to be specific about our port number
+        DatagramSocket socket = new DatagramSocket();
+        System.out.println("Enter a message to echo, or type exit to quit");
+        while (true) {
 
-            //create & send the request packet to server
-            //not specifying port number because the client makes the first move and the server extracts the port number
-            //from whatever the client sends
-            //We don't need to be specific about our port number
-            DatagramSocket socket = new DatagramSocket();
+            String message = keyboard.nextLine();
+
+            if(message.equalsIgnoreCase("exit")) {
+                break;
+            }
+
             DatagramPacket request = new DatagramPacket(
                     message.getBytes(),
                     message.getBytes().length,
@@ -43,5 +49,6 @@ public class EchoClient {
                     reply.getLength());
             System.out.println(new String(serverMessage));
         }
+        socket.close();
     }
 }

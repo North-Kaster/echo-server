@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.Arrays;
 
 /*
@@ -11,18 +12,18 @@ Echo Server creates a UDP socket and packet, and sends back whatever the client 
 "Echoing" their
  */
 public class EchoServer {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        //setting spcific port number so that clients know which port number is needed to contact the server
+        //setting specific port number so that clients know which port number is needed to contact the server
         DatagramSocket serverSocket = new DatagramSocket(3000);
 
-        // creating an empty packet from the client. This still contains all standard info like
-        // IP addresses and port numbers, but no content
-        DatagramPacket clientRequest = new DatagramPacket(new byte[1024], 1024);2
-
-        // blocking call. There's a chance the following line could receive something,
-        // then return, otherwise, it blocks. It doesn't have to receive
         while (true) {
+            // creating an empty packet from the client. This still contains all standard info like
+            // IP addresses and port numbers, but no content
+            DatagramPacket clientRequest = new DatagramPacket(new byte[1024], 1024);
+
+            // blocking call. There's a chance the following line could receive something,
+            // then return, otherwise, it blocks. It doesn't have to receive
             serverSocket.receive(clientRequest);
             byte[] content = Arrays.copyOf(
                     clientRequest.getData(),
@@ -40,7 +41,8 @@ public class EchoServer {
                     clientPort
             );
             serverSocket.send(serverReply);
-            serverSocket.close();
         }
+
+        //serverSocket.close();
     }
 }
